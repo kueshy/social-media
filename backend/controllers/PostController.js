@@ -108,7 +108,11 @@ export const getTimelinePosts = async (req, res) => {
         },
       },
     ]);
-    res.status(200).json(posts.concat(...followingPosts[0].followingPosts));
+    res.status(200).json(
+      posts.concat(...followingPosts[0].followingPosts).sort((a, b) => {
+        return b.createdAt - a.createdAt;
+      })
+    );
   } catch (error) {
     res.status(500).json(error);
   }
