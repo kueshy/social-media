@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
   ChatIcon,
@@ -6,8 +6,21 @@ import {
   HeartIcon,
   ShareIcon,
 } from "@heroicons/react/outline";
+import { HeartIcon as Heart } from "@heroicons/react/solid";
+import { useSelector } from "react-redux";
+import { likePost } from "../api/PostRequest";
 
-function Post({ id, data }) {
+function Post({ data }) {
+  const { user } = useSelector((state) => state.authReducer.authData);
+  const [liked, setLiked] = useState(data.likes.includes(user._id));
+  const [likes, setLikes] = useState(data.likes.length);
+
+  const handleClick = () => {
+    likePost(data._id, user._id);
+    setLiked((prev) => !prev);
+    liked ? setLikes((prev) => prev - 1) : setLikes((prev) => prev + 1);
+  };
+
   return (
     <div>
       <div className="p-2">
@@ -15,8 +28,8 @@ function Post({ id, data }) {
           <div className="">
             <div className="ml-2">
               <div className="">
-                <span className="text-white font-bold mr-1">Kush</span>
-                <span className="text-slate-400">@EliasJr</span>
+                <span className="text-white font-bold mr-1">{data.name}</span>
+                <span className="text-slate-400">@{data.username}</span>
                 <span className="items-center">.</span>
               </div>
 
@@ -36,9 +49,16 @@ function Post({ id, data }) {
                   <RefreshIcon className="text-white h-6 w-6 pr-2" />
                   <span className="text-sm">12</span>
                 </span>
-                <span className="flex items-center cursor-pointer">
-                  <HeartIcon className="text-white h-6 w-6 pr-2" />
-                  <span className="text-sm">12</span>
+                <span
+                  onClick={handleClick}
+                  className="flex items-center cursor-pointer"
+                >
+                  {liked ? (
+                    <Heart className="text-red-500 h-6 w-6 pr-2" />
+                  ) : (
+                    <HeartIcon className="text-white h-6 w-6 pr-2" />
+                  )}
+                  <span className="text-sm">{likes}</span>
                 </span>
                 <span>
                   <ShareIcon className="text-white h-5 w-5" />

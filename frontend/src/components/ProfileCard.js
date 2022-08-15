@@ -1,8 +1,14 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import { logout } from "../actions/AuthAction";
 import Cover from "../assets/images/cover.png";
 import Messi from "../assets/images/messi.jpg";
 
 function ProfileCard() {
+  const dispatch = useDispatch();
+  const handleLogout = () => {
+    dispatch(logout());
+  };
   return (
     <div className="bg-slate-800  rounded-t-lg overflow-x-clip">
       <div className="relative">
@@ -34,7 +40,9 @@ function ProfileCard() {
           </a>
         </span>
         <span>
-          <a href="/">Logout</a>
+          <a onClick={handleLogout} href="/">
+            Logout
+          </a>
         </span>
       </div>
     </div>

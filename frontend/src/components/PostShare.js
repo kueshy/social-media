@@ -6,8 +6,12 @@ import {
   FilmIcon,
   CalendarIcon,
 } from "@heroicons/react/outline";
+import { useDispatch, useSelector } from "react-redux";
+import { uploadPost } from "../actions/PostsAction";
 
 function PostShare() {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.authReducer.authData);
   const [image, setImage] = useState(null);
 
   const onImageChange = (e) => {
@@ -18,25 +22,39 @@ function PostShare() {
   };
 
   const imageRef = useRef();
+  const post = useRef();
+
+  const handleShare = (e) => {
+    e.preventDefault();
+
+    const newPost = {
+      userId: user._id,
+      post: post.current.value,
+    };
+    dispatch(uploadPost(newPost));
+  };
+
   return (
     <div className=" bg-slate-800 p-2 rounded">
       <div className="flex flex-row gap-x-2 items-center">
         <img src={Cover} alt="" className="h-16 w-16 rounded-full" />
         <input
           type="text"
+          name="post"
           className="w-full text-xl text-white px-1 py-2 bg-slate-800 border-none outline-none"
           placeholder="What's happening?"
+          ref={post}
         />
       </div>
       <div className="flex flex-row justify-around mt-2">
         <div>
           <span onClick={() => imageRef.current.click()}>
-            <PhotographIcon className="text-white h-5 w-5 cursor-pointer" />
+            <PhotographIcon className="text-white h-6 w-6 cursor-pointer" />
           </span>
         </div>
         <div>
           <span>
-            <FilmIcon className="text-white h-5 w-5" />
+            <FilmIcon className="text-white h-6 w-6" />
           </span>
         </div>
         <div>
@@ -57,7 +75,10 @@ function PostShare() {
           <input type="file" ref={imageRef} onChange={onImageChange} />
         </div>
         <div>
-          <button className="bg-sky-500/80 hover:bg-sky-500/90 text-white px-6 py-1 rounded-full">
+          <button
+            onClick={handleShare}
+            className="bg-sky-500/80 hover:bg-sky-500/90 text-white px-6 py-1 rounded-full"
+          >
             Share
           </button>
         </div>
